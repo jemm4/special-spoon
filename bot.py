@@ -13,13 +13,6 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 client = discord.Client()
 
-
-def getRandomActivity():
-    activityRows = db.getAllActivities()
-    result = random.choice(activityRows)
-    return result[1] # 0 = activity_id, 1 = activity_name
-
-
 @client.event
 async def on_ready():
     print(f'{client.user.name} has connected to Discord!')
