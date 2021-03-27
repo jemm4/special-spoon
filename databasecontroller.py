@@ -14,29 +14,45 @@ class DatabaseController:
     def __del__(self):
         self.con.close()
 
-    def addActivity(self, name):
-        sql = f"INSERT INTO activity(name) VALUES({name.lower()})"
+    def createList(self, listName, creatorId):
+        """Creates a new list if one with its name does not already exist
+
+        Parameters
+        ----------
+        listName : str
+            The name of the new list
+        creatorId : int
+            The discord id of the creator of the list
+
+        Returns
+        -------
+        bool
+            Whether the creation of the new list was successful
+        """
+
+        listName = listName.lower()
+
+        if not self.listExists(listName):    
+            cur = self.con.cursor()
+            sql = "INSERT INTO list(creator_id, list_name) VALUES(?, ?)"
+            params = (creatorId, listName)
+
+            cur.execute(sql, params)   
+            self.con.commit()
+            return True
+
+        return False
+
+
+    def listExists(self, listName):
         cur = self.con.cursor()
+        params = (listName,)
+        sql = "SELECT * FROM list WHERE list_name=?"
 
-        cur.execute(sql)
-        con.commit()
+        cur.execute(sql, params)
+        result = cur.fetchone()
 
-    def removeActivity(self, name):
-        sql = f"DELETE FROM activity WHERE name = ({name.lower()})"
-        cur = self.con.cursor()
+        if result == None:
+            return False
 
-        cur.execute(sql)
-        con.commit()
-
-    def getAllActivities(self):
-        sql = "SELECT * FROM activity"
-        cur = self.con.cursor()
-
-        rows = cur.execute(sql).fetchall()
-        return rows
-
-
-
-
-    
-    
+        return True
