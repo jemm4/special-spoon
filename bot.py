@@ -9,13 +9,14 @@ import discord
 db = DatabaseController()
 
 load_dotenv()
-TOKEN = os.getenv('DISCORD_TOKEN')
+TOKEN = os.getenv("DISCORD_TOKEN")
 
 client = discord.Client()
 
+
 @client.event
 async def on_ready():
-    print(f'{client.user.name} has connected to Discord!')
+    print(f"{client.user.name} has connected to Discord!")
 
 
 @client.event
@@ -24,5 +25,5 @@ async def on_message(message):
     id = message.author.id
     print(id)
 
-client.run(TOKEN)
 
+client.run(TOKEN)
