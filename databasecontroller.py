@@ -32,7 +32,7 @@ class DatabaseController:
 
         listName = listName.lower()
 
-        if not self.ListExists(listName):
+        if listName and not self.ListExists(listName):
             cur = self.con.cursor()
             sql = "INSERT INTO list(creator_id, list_name) VALUES(?, ?)"
             params = (creatorId, listName)
@@ -108,7 +108,7 @@ class DatabaseController:
 
         return False if cur.fetchone() == None else True
 
-    def AddItemToDatabase(self, itemName: str, categoryName: str):
+    def CreateItem(self, itemName: str, categoryName: str):
         """Creates a new item in the item table, if one with its name does not already exist
 
         Parameters
@@ -125,7 +125,7 @@ class DatabaseController:
         """
         categoryId = self.GetCategoryId(categoryName)
 
-        if not self.ItemExists(itemName):
+        if itemName and categoryName and not self.ItemExists(itemName):
             cur = self.con.cursor()
 
             sql = "INSERT INTO item (item_name, category_id) VALUES (?, ?)"
@@ -153,8 +153,11 @@ class DatabaseController:
         categoryId : str
             The category id of the passed in category name
         """
+        if not categoryName:
+            return ""
+
         if not self.CategoryExists(categoryName):
-            self.AddCategoryToDatabase(categoryName)
+            self.CreateCategory(categoryName)
 
         cur = self.con.cursor()
         params = (categoryName,)
@@ -166,7 +169,7 @@ class DatabaseController:
 
         return str(categoryId)
 
-    def AddCategoryToDatabase(self, categoryName: str):
+    def CreateCategory(self, categoryName: str):
         """Creates a new category in the item_categories table, if one with its name does not already exist
 
         Parameters
@@ -179,7 +182,7 @@ class DatabaseController:
         bool
             Whether the addition of the new category was successful
         """
-        if not self.CategoryExists(categoryName):
+        if categoryName and not self.CategoryExists(categoryName):
             cur = self.con.cursor()
 
             sql = "INSERT INTO item_categories (category_name) VALUES (?)"
