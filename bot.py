@@ -9,9 +9,9 @@ from discord.ext import commands
 db = DatabaseController()
 
 load_dotenv()
-TOKEN = os.getenv('DISCORD_TOKEN')
+TOKEN = os.getenv("DISCORD_TOKEN")
 
-bot = commands.Bot(command_prefix='?')
+bot = commands.Bot(command_prefix="?")
 
 
 @bot.event
