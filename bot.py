@@ -4,25 +4,26 @@ import os
 from dotenv import load_dotenv
 import random
 from databasecontroller import DatabaseController
-import discord
+from discord.ext import commands
 
 db = DatabaseController()
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 
-client = discord.Client()
+bot = commands.Bot(command_prefix='?')
 
-@client.event
+
+@bot.event
 async def on_ready():
-    print(f'{client.user.name} has connected to Discord!')
+    print(f"{bot.user.name} has connected to Discord!")
 
 
-@client.event
+@bot.event
 async def on_message(message):
     # TODO: Make this more robust. I'm just trolilng with this
     id = message.author.id
     print(id)
 
-client.run(TOKEN)
 
+bot.run(TOKEN)
