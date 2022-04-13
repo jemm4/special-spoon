@@ -20,6 +20,7 @@ async def on_ready():
     print(f'{bot.user.name} has connected to Discord!')
 
 
+
 @bot.event
 async def on_message(message):
     # TODO: Make this more robust. I'm just trolilng with this
@@ -81,5 +82,5 @@ def processMessages(message):
 
         return retval
 
-bot.run(TOKEN)
 
+bot.run(TOKEN)

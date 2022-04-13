@@ -3,7 +3,7 @@ DROP TABLE IF EXISTS item;
 CREATE TABLE item (
    item_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
    item_name TEXT NOT NULL,
-   category_id INTEGER NOT NULL 
+   category_id INTEGER NOT NULL
 );
 
 DROP TABLE IF EXISTS list;
@@ -24,7 +24,7 @@ CREATE TABLE list_items (
 DROP TABLE IF EXISTS roll_event;
 
 CREATE TABLE roll_event (
-    roll_event_id INTEGER AUTOINCREMENT,
+    roll_event_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     list_id INTEGER NOT NULL,
     user_id INTEGER NOT NULL,
     item_id INTEGER NOT NULL,
@@ -34,7 +34,7 @@ CREATE TABLE roll_event (
 DROP TABLE IF EXISTS item_categories;
 
 CREATE TABLE item_categories (
-    category_id INTEGER NOT NULL,
+    category_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     category_name TEXT NOT NULL
 );
 
@@ -43,7 +43,7 @@ CREATE TABLE item_categories (
 
 /* Base inserts */
 
-INSERT INTO 
+INSERT INTO
     item_categories(category_id, category_name)
 VALUES
     (0, "Unknown"),
