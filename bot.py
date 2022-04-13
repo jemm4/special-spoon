@@ -27,7 +27,6 @@ async def on_message(message):
         botReplies = processMessages(message)
 
         for reply in botReplies:
-            #await message.channel.send(reply)
             await message.reply(reply)
 
 def processMessages(message):
@@ -63,13 +62,7 @@ def processMessages(message):
             createdLists = []
 
             for list in newLists:
-                exists = db.listExists(list)
-
-                if exists:
-                    existingLists.append(list)
-                else:
-                    db.createNewList(list, message.author.id)
-                    createdLists.append(list)
+                createdLists.append(list) if db.createNewList(list, message.author.id) else existingLists.append(list)
 
             # Bot output result
             if len(existingLists) > 0:

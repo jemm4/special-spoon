@@ -14,7 +14,7 @@ class DatabaseController:
     def __del__(self):
         self.con.close()
 
-    def createNewList(self, listName, creatorId):
+    def createNewList(self, listName: str, creatorId: int):
         """Creates a new list
 
         Parameters
@@ -23,34 +23,25 @@ class DatabaseController:
             Name of new list
         creatorId : int
             The discord id of the creator of the list
-        """
-        
-        sql = "INSERT INTO list(creator_id, list_name) VALUES(?, ?);"
-        values = (creatorId, listName)
-        #values = [(creatorId, name) for name in listNames]
-        cur = self.con.cursor()
-        cur.execute(sql, values)
-        self.con.commit()
-        result = cur.fetchone()
-        print(result)
-        """
-            tempSql = "INSERT INTO list(creator_id, list_name) VALUES(?, ?);"
-        listName = listName.lower()
 
-        if not self.listExists(listName):    
-            cur = self.con.cursor()
-            sql = "INSERT INTO list(creator_id, list_name) VALUES(?, ?)"
+        Returns
+        ----------
+        bool
+            True if list was successfully created. False otherwise
+        """
+
+        if not self.listExists(listName):
+            sql = "INSERT INTO list(creator_id, list_name) VALUES(?, ?);"
             params = (creatorId, listName)
-
-            cur.execute(sql, params)   
+            cur = self.con.cursor()
+            cur.execute(sql, params)
             self.con.commit()
             return True
 
         return False
-        """
 
 
-    def listExists(self, listName):
+    def listExists(self, listName: str):
         """Checks if a list already exists
 
         Parameters
@@ -63,14 +54,10 @@ class DatabaseController:
         bool
             True if list exists, false otherwise
         """
+
         cur = self.con.cursor()
         params = (listName,)
         sql = "SELECT * FROM list WHERE list_name=?"
-
         cur.execute(sql, params)
-        result = cur.fetchone()
 
-        if result == None:
-            return False
-
-        return True
+        return False if cur.fetchone() == None else True
