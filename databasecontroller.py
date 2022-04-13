@@ -14,22 +14,27 @@ class DatabaseController:
     def __del__(self):
         self.con.close()
 
-    def createList(self, listName, creatorId):
-        """Creates a new list if one with its name does not already exist
+    def createNewList(self, listName, creatorId):
+        """Creates a new list
 
         Parameters
         ----------
-        listName : str
-            The name of the new list
+        listNames : str
+            Name of new list
         creatorId : int
             The discord id of the creator of the list
-
-        Returns
-        -------
-        bool
-            Whether the creation of the new list was successful
         """
-
+        
+        sql = "INSERT INTO list(creator_id, list_name) VALUES(?, ?);"
+        values = (creatorId, listName)
+        #values = [(creatorId, name) for name in listNames]
+        cur = self.con.cursor()
+        cur.execute(sql, values)
+        self.con.commit()
+        result = cur.fetchone()
+        print(result)
+        """
+            tempSql = "INSERT INTO list(creator_id, list_name) VALUES(?, ?);"
         listName = listName.lower()
 
         if not self.listExists(listName):    
@@ -42,9 +47,22 @@ class DatabaseController:
             return True
 
         return False
+        """
 
 
     def listExists(self, listName):
+        """Checks if a list already exists
+
+        Parameters
+        ----------
+        listNames : str
+            Name of list
+
+        Returns
+        ----------
+        bool
+            True if list exists, false otherwise
+        """
         cur = self.con.cursor()
         params = (listName,)
         sql = "SELECT * FROM list WHERE list_name=?"
