@@ -11,7 +11,7 @@ DROP TABLE IF EXISTS list;
 CREATE TABLE list (
     list_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     creator_id INTEGER,
-    list_name TEXT NOT NULL
+    list_name TEXT NOT NULL UNIQUE
 );
 
 DROP TABLE IF EXISTS list_items;
