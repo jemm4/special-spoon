@@ -13,7 +13,9 @@ db = DatabaseController()
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 
-bot = commands.Bot(botPrefix)
+intents = discord.Intents.default()
+intents.message_content = True
+bot = commands.Bot(command_prefix=botPrefix, intents=intents)
 
 @bot.event
 async def on_ready():
