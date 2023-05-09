@@ -3,7 +3,7 @@
 import os
 from dotenv import load_dotenv
 import random
-from databasecontroller import DatabaseController
+from DatabaseController import DatabaseController
 from discord.ext import commands
 import discord
 
