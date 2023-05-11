@@ -1,88 +1,68 @@
 # bot.py
 
 import os
-from dotenv import load_dotenv
-import random
-from databasecontroller import DatabaseController
-from discord.ext import commands
 import discord
+from dotenv import load_dotenv
 
-botPrefix = "-picker" # TODO: Get a real prefix??
+from DatabaseController import DatabaseController
+
 db = DatabaseController()
+bot = discord.Bot()
 
-load_dotenv()
-TOKEN = os.getenv('DISCORD_TOKEN')
-
-intents = discord.Intents.default()
-intents.message_content = True
-bot = commands.Bot(command_prefix=botPrefix, intents=intents)
 
 @bot.event
 async def on_ready():
     print(f'{bot.user.name} has connected to Discord!')
 
 
+@bot.command(description="Create a list or multiple lists")
+async def newlist(
+        context: discord.ApplicationContext,
+        listnames: discord.Option(
+            description="The name of the list you want to add. If adding multiple lists, seperate with a comma or a space.",
+            required=True
+        )):
+    #     """Makes a new list or lists and save it to the database
+    #
+    #         Parameters
+    #         ----------
+    #         context : discord.ApplicationContext (https://docs.pycord.dev/en/stable/api/application_commands.html#discord.ApplicationContext)
+    #             Discord application command interaction context
+    #         listnames :
+    #             A list of names
+    #
+    #         Returns
+    #         ----------
+    #         [str]
+    #             Messages for the bot to reply with
+    #         """
+    retval = ""
+    listnames = listnames.replace(', ', " ").replace(',', ' ').split(' ')
+    existingLists = []
+    createdLists = []
 
-@bot.event
-async def on_message(message):
-    # TODO: Make this more robust. I'm just trolilng with this
-    if message.content.startswith(botPrefix):
-        botReplies = processMessages(message)
+    for listName in listnames:
+        createdLists.append(listName) if db.createNewList(listName, context.author.id) else existingLists.append(
+            listName)
 
-        for reply in botReplies:
-            await message.reply(reply)
+    # Bot output result
+    if len(existingLists) > 0:
+        existingListsReply = "The following lists were not added because a list already exists with the name:\n"
+        for l in existingLists:
+            existingList = "**" + l + "**" + "\n"
+            existingListsReply += existingList
+        retval += existingListsReply
 
-def processMessages(message):
-    """Processes messages sent by users of the bot
+    if len(createdLists) > 0:
+        createdListsReply = "The following lists were added:\n"
+        for l in createdLists:
+            createdList = "**" + l + "**" + "\n"
+            createdListsReply += createdList
+        retval += createdListsReply
 
-        Parameters
-        ----------
-        message : discord.Message (https://discordpy.readthedocs.io/en/stable/api.html?highlight=message#discord.Message)
-            Message sent by user
-
-        Returns
-        ----------
-        [str]
-            Messages for the bot to reply with
-        """
-
-    retval = []
-    command = message.content.split()
-
-    if len(command) == 1:
-        return retval
-    elif len(command) >= 2:
-        if command[1].lower() == "newlist":
-            # Everything after newlist is a list to be made, separated by space
-            # TODO: probably move some of this logic into a seprate class so this extra logic isn't just sitting here
-            newLists = command[2:]
-
-            if len(newLists) == 0: # no lists added, missing list name
-                retval.append("You need to specify a list name to add (i.e. -picker newlist booba)")
-                return retval
-
-            existingLists = []
-            createdLists = []
-
-            for list in newLists:
-                createdLists.append(list) if db.createNewList(list, message.author.id) else existingLists.append(list)
-
-            # Bot output result
-            if len(existingLists) > 0:
-                existingListsReply = "The following lists were not added because a list already exists with the name:\n"
-                for l in existingLists:
-                    existingList = "**" + l + "**" + "\n"
-                    existingListsReply += existingList
-                retval.append(existingListsReply)
-
-            if len(createdLists) > 0:
-                createdListsReply = "The following lists were added:\n"
-                for l in createdLists:
-                    createdList = "**" + l + "**" + "\n"
-                    createdListsReply += createdList
-                retval.append(createdListsReply)
-
-        return retval
+    await context.respond("{msg}".format(msg=retval))
 
 
+load_dotenv()
+TOKEN = os.getenv('DISCORD_TOKEN')
 bot.run(TOKEN)

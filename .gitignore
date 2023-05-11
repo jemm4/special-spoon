@@ -160,3 +160,5 @@ Thumbs.db #thumbnail cache on Windows
 
 *.db
 *.env
+
+*.idea/

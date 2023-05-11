@@ -26,7 +26,7 @@ pip install -r requirements.txt
 - Create sqlite databse using create.sql schema:
 
 ```bash
-sqlite3 sql/db.db < sql/create.sql
+sqlite3 db/db.db < sql/create.sql
 ```
 
 - Create .env for environment variables then add the following:
