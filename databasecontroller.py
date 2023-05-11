@@ -14,7 +14,7 @@ class DatabaseController:
     def __del__(self):
         self.con.close()
 
-    def createNewList(self, listName: str, creatorId: int):
+    def create_new_list(self, listName: str, creatorId: int):
         """Creates a new list
 
         Parameters
@@ -30,7 +30,7 @@ class DatabaseController:
             True if list was successfully created. False otherwise
         """
 
-        if not self.listExists(listName):
+        if not self.list_exists(listName):
             sql = "INSERT INTO list(creator_id, list_name) VALUES(?, ?);"
             params = (creatorId, listName)
             cur = self.con.cursor()
@@ -41,7 +41,7 @@ class DatabaseController:
         return False
 
 
-    def listExists(self, listName: str):
+    def list_exists(self, listName: str):
         """Checks if a list already exists
 
         Parameters
